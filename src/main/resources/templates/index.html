@@ -1,0 +1,227 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão Financeiro Pessoal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'poppins', sans-serif;
+      outline: none;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    main {
+      max-width: 550px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .resume {
+      display: flex;
+      padding: 10px 0;
+      gap: 40px;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .resume>div {
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0px 0px 5px #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      width: 150px;
+    }
+
+    .newItem {
+      display: flex;
+      gap: 10px;
+      align-items: end;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .divDesc,
+    .divType,
+    .divAmount {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .newItem>button {
+      background-color: #2C73D2;
+      color: white;
+      border: none;
+      padding: 0 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      height: 34px;
+    }
+
+    input,
+    select {
+      padding: 5px;
+    }
+
+    .divTable {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    table {
+      width: 98%;
+      padding: 20px 0;
+      border-radius: 5px;
+    }
+
+    th {
+      text-align: start;
+      border-bottom: inset;
+      padding-bottom: 5px;
+    }
+
+    i {
+      font-size: 25px;
+    }
+
+    .bxs-chevron-up-circle {
+      color: #00C9A7;
+    }
+
+    .bxs-chevron-down-circle {
+      color: #D83121;
+    }
+
+    .columnAction {
+      width: 40px;
+      text-align: center;
+    }
+
+    .columnAction>button {
+      background: transparent;
+      border: none;
+    }
+
+    .columnAmount {
+      width: 30%;
+    }
+
+    .columnType {
+      width: 80px;
+      text-align: center;
+    }
+    .entrada{
+      background-color: greenyellow;
+    }
+    .saida{
+      background-color: red;
+    }
+    .total{
+      background-color: cornflowerblue;
+    }
+   
+    
+  </style>
+  <link rel="stylesheet" href="/src/main/resources/static/css/style.css">
+
+
+
+</head>
+
+<body>
+  <main>
+    <div class="resume">
+      <div class="entrada">
+        Entradas: R$
+        <span class="incomes" th:text="${somaValoresEntrada}">0.00</span>
+      </div>
+      <div class="saida">
+        Saídas: R$
+        <span class="expenses" th:text="${somaValoresSaida}" >0.00</span>
+      </div>
+      <div class="total">
+        Total: R$
+        <span class="total" th:text="${subValorTotal}">0.00</span>
+      </div>
+    </div>
+
+
+    <div class="newItem">
+
+      <form action="/create" method="POST">
+        <div class="divDesc">
+          <label for="desc">Descrição</label>
+          <input type="text" id="desc" name="descricao" />
+        </div>
+        <div class="divAmount">
+          <label for="amount">Valor</label>
+          <input type="number" id="amount" name="valor" />
+        </div>
+        <div class="divType">
+          <label for="type">Tipo</label>
+          <select id="type" name="tipo">
+            
+            <option th:each="tipo : ${(tipoDeEntrada)}"
+            th:value="${tipo}" th:text="${tipo}"></option>
+
+
+          </select>
+        </div>
+        <button type="submit" id="btnNew">Incluir</button>
+
+      </form>
+    </div>
+
+
+
+    <div class="divTable">
+      <table>
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th class="columnAmount">Valor</th>
+            <th class="columnType">Tipo</th>
+            <th class="columnAction"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+
+          <tr th:each="gestao : ${gestoes}">
+            <td th:text="${gestao.getDescricao}" ></td>
+            <td th:text="${gestao.getValor}"></td>
+            <td th:text="${gestao.getTipo}"></td>
+            <td>
+              <form th:action="@{/delete}" method="post">
+                  <input type="hidden" name="id" th:value="${gestao.id}" />
+                  <button type="submit">Excluir</button>
+              </form>
+          </td>
+          </tr>
+
+
+        </tbody>
+      </table>
+  </main>
+
+
+</body>
+
+</html>
